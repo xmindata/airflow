@@ -65,3 +65,18 @@ airflow scheduler
 ```
 
 Now you can go to `http://localhost:8080/` to see the Airflow UI.
+
+
+## PySpark Configuration
+
+To run Pyspark, you need to install Java and Spark first.
+
+### Java Installation
+Better just download from the official website, instead of using brew.
+
+### Spark Installation
+
+```
+brew install apache-spark
+```
+
