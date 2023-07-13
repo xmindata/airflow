@@ -55,7 +55,11 @@ pip install --upgrade apache-airflow
 ### Step 3: Set the AIRFLOW_HOME environment variable to your project directory
 
 ```
-export AIRFLOW_HOME=/path/to/your/project
+export AIRFLOW_HOME=$(pwd)
+```
+After this you can check it by 
+```
+echo $AIRFLOW_HOME
 ```
 
 ### Step 4: Initialize the database
@@ -81,6 +85,11 @@ Open the `airflow.cfg` file in a text editor and update the `sql_alchemy_conn` a
 The `sql_alchemy_conn` shall be set up to the `/src/` folder where all the python scripts are located:
 ```
 dags_folder = /absolute_dir/airflow/src/
+```
+
+**Update the executor to pick up the local python snippts**
+```
+dag_dir_list_interval = 30
 ```
 
 After updating the configuration file, run the following command to upgrade the Airflow server.
