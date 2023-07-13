@@ -116,6 +116,12 @@ In case the python code is updated, you need to kill the Airflow server and rest
 - It shall follow a way such as ```kill 12345``` (12345 is the PID of the process)
 
 
+Or in a easier way, use this to kill them all
+```
+pkill -f "airflow webserver"
+pkill -f "airflow scheduler"
+```
+
 ## PySpark Configuration
 
 To run Pyspark, you need to install Java and Spark first.
