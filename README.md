@@ -9,8 +9,9 @@ Practice for Airflow, MLflow and Spark.
 - [ ] Pyspark
 - [ ] Initiate the whole project for Azure development
 
-## Initiate virtual environment
+## Set up the Airflow configuration
 
+### Step 1: Create a Python virtual environment
 In the terminal, run the following command to initiate the virtual environment.
 
 ```
@@ -40,13 +41,24 @@ pyspark==3.3.2
 findspark==2.0.1
 ```
 
-## Initialization for [Airflow](https://airflow.apache.org/docs/apache-airflow/stable/index.html)
+### Step 2: Install/Upgrade [Airflow](https://airflow.apache.org/docs/apache-airflow/stable/index.html)
 
 After installing the requirements.txt, run the following commands to update the airflow.
 ```
+# install airflow
+pip install apache-airflow
+
+# or upgrade existing installation
 pip install --upgrade apache-airflow
 ```
 
+### Step 3: Set the AIRFLOW_HOME environment variable to your project directory
+
+```
+export AIRFLOW_HOME=/path/to/your/project
+```
+
+### Step 4: Initialize the database
 Run this in the terminal to start the Airflow server.
 
 ```
@@ -58,13 +70,41 @@ airflow users create \
     --lastname Parker \
     --role Admin \
     --email spiderman@superhero.org
-
-airflow webserver --port 8080
-
-airflow scheduler
 ```
 
+This will initiate the Airflow database and create a user for you. 
+
+### Step 5: Update the configuration file 
+
+Open the `airflow.cfg` file in a text editor and update the `sql_alchemy_conn` and `executor` parameters to your desired settings. The `sql_alchemy_conn` parameter should point to the location of your database, and the `executor` parameter should be set to the type of `executor` you wish to use.
+
+The `sql_alchemy_conn` shall be set up to the `/src/` folder where all the python scripts are located:
+```
+dags_folder = /absolute_dir/airflow/src/
+```
+
+After updating the configuration file, run the following command to upgrade the Airflow server.
+```
+airflow db upgrade
+```
+
+### Step 6: Start the Airflow server
+Then, run the following command to start the Airflow server.
+```
+airflow webserver --daemon
+airflow scheduler --daemon
+```
+This will make sure both the webserver and scheduler are running in the background.
+
+### Step 7: Check the Airflow server
 Now you can go to `http://localhost:8080/` to see the Airflow UI.
+
+### Step 8: kill the Airflow server
+In case the python code is updated, you need to kill the Airflow server and restart it again.
+
+- Run the following command to kill the Airflow server ```ps aux | grep "airflow"```
+- In order to do it in an easier way, copy the logging of and ask ChatGPT to kill the process for you.
+- It shall follow a way such as ```kill 12345``` (12345 is the PID of the process)
 
 
 ## PySpark Configuration
