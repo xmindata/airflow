@@ -5,8 +5,8 @@ Practice for Airflow, MLflow and Spark.
 - [X] Initiate the virtual environment for local development
 - [X] [Airflow](https://airflow.apache.org/docs/apache-airflow/stable/index.html) Installation
 - [X] Airflow Configuration
+- [X] Pyspark for data preprocessing (fit for MLflow)
 - [ ] MLflow
-- [ ] Pyspark
 - [ ] Initiate the whole project for Azure development
 
 ## Set up the Airflow configuration
