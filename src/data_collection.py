@@ -15,6 +15,3 @@ def collect_data(file_path, url=None):
             f.write(response.text)
     else:
         print(f'Failed to retrieve data: {response.status_code}')
-    
-
-
