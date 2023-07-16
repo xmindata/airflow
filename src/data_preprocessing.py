@@ -4,11 +4,11 @@ from pyspark.sql.functions import trim, concat_ws, unix_timestamp, hour, minute,
 from pyspark.ml import Pipeline
 import os
 
-def process_data(input_file_path, output_train_data_path, output_test_data_path, scaler_output_path):
+def process_data(input_file_path, output_train_data_path, output_test_data_path, scaler_path):
     # Create the directories if they do not already exist
     os.makedirs(output_train_data_path, exist_ok=True)
     os.makedirs(output_test_data_path, exist_ok=True)
-    os.makedirs(scaler_output_path, exist_ok=True)
+    os.makedirs(scaler_path, exist_ok=True)
 
     # Create a SparkSession
     spark = SparkSession.builder.appName("IoTDeviceFailure").getOrCreate()
@@ -46,9 +46,12 @@ def process_data(input_file_path, output_train_data_path, output_test_data_path,
 
     # Split the data into training and test sets
     train_data, test_data = data.randomSplit([0.8, 0.2], seed=42)
-
+    # Write the processed data to new CSV files
+    train_data.write.mode('overwrite').format('csv').option('header', 'true').save(output_train_data_path)
+    test_data.write.mode('overwrite').format('csv').option('header', 'true').save(output_test_data_path)
+ 
     # Define the feature columns
-    feature_columns = [column for column in train_data.columns if column != 'target']
+    feature_columns = [column for column in train_data.columns if column != 'label']
 
     # Replace original columns with indexed ones in feature columns
     for col in categorical_columns:
@@ -67,25 +70,10 @@ def process_data(input_file_path, output_train_data_path, output_test_data_path,
     # Fit the pipeline to the training data
     pipeline_model = pipeline.fit(train_data)
 
-    # Transform the training and test data
-    train_data_scaled = pipeline_model.transform(train_data)
-    test_data_scaled = pipeline_model.transform(test_data)
-
     # Save the pipeline model to a file, overwrite if it already exists
-    pipeline_model.write().overwrite().save(scaler_output_path)
+    pipeline_model.write().overwrite().save(scaler_path)
 
-    # Write the processed data to new CSV files
-    train_data_scaled.drop('features', 'scaledFeatures').write.mode('overwrite').format('csv').option('header', 'true').save(output_train_data_path)
-    test_data_scaled.drop('features', 'scaledFeatures').write.mode('overwrite').format('csv').option('header', 'true').save(output_test_data_path)
     train_data.show()
     # Write the processed data to new Parquet files, overwrite if they already exist
     # train_data_scaled.write.mode('overwrite').parquet(output_train_data_path)
     # test_data_scaled.write.mode('overwrite').parquet(output_test_data_path)
-
-# # Run the code
-# if __name__ == '__main__':
-#     input_file_path = './data/from/data.csv'
-#     output_train_data_path = './data/to/train_data'
-#     output_test_data_path = './data/to/test_data'
-#     scaler_output_path = './data/to/scaler'
-#     process_data(input_file_path, output_train_data_path, output_test_data_path, scaler_output_path)

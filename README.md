@@ -6,8 +6,9 @@ Practice for Airflow, MLflow and Spark.
 - [X] [Airflow](https://airflow.apache.org/docs/apache-airflow/stable/index.html) Installation
 - [X] Airflow Configuration
 - [X] Pyspark for data preprocessing (fit for MLflow)
-- [ ] MLflow
+- [X] MLflow configuration
 - [ ] Initiate the whole project for Azure development
+
 
 ## Set up the Airflow configuration
 
@@ -41,7 +42,14 @@ pyspark==3.3.2
 findspark==2.0.1
 ```
 
-### Step 2: Install/Upgrade [Airflow](https://airflow.apache.org/docs/apache-airflow/stable/index.html)
+### Step 2: Set up the MLflow configuration
+
+```
+nohup mlflow server --backend-store-uri $(pwd)/mlflow/backend --default-artifact-root file:$(pwd)/mlflow/artifacts --host 0.0.0.0 --port 6000 &
+
+```
+
+### Step 3: Install/Upgrade [Airflow](https://airflow.apache.org/docs/apache-airflow/stable/index.html)
 
 After installing the requirements.txt, run the following commands to update the airflow.
 ```
@@ -52,17 +60,17 @@ pip install apache-airflow
 pip install --upgrade apache-airflow
 ```
 
-### Step 3: Set the AIRFLOW_HOME environment variable to your project directory
+### Step 4: Set the AIRFLOW_HOME environment variable to your project directory
 
 ```
-export AIRFLOW_HOME=$(pwd)
+export AIRFLOW_HOME=$(pwd)/airflow_home
 ```
 After this you can check it by 
 ```
 echo $AIRFLOW_HOME
 ```
 
-### Step 4: Initialize the database
+### Step 5: Initialize the database
 Run this in the terminal to start the Airflow server.
 
 ```
@@ -78,7 +86,7 @@ airflow users create \
 
 This will initiate the Airflow database and create a user for you. 
 
-### Step 5: Update the configuration file 
+### Step 6: Update the configuration file 
 
 Open the `airflow.cfg` file in a text editor and update the `sql_alchemy_conn` and `executor` parameters to your desired settings. The `sql_alchemy_conn` parameter should point to the location of your database, and the `executor` parameter should be set to the type of `executor` you wish to use.
 
@@ -97,7 +105,7 @@ After updating the configuration file, run the following command to upgrade the 
 airflow db upgrade
 ```
 
-### Step 6: Start the Airflow server
+### Step 7: Start the Airflow server
 Then, run the following command to start the Airflow server.
 ```
 airflow webserver --daemon
@@ -105,7 +113,7 @@ airflow scheduler --daemon
 ```
 This will make sure both the webserver and scheduler are running in the background.
 
-### Step 7: Check the Airflow server
+### Step 8: Check the Airflow server
 Now you can go to `http://localhost:8080/` to see the Airflow UI.
 
 ### Step 8: kill the Airflow server
@@ -120,6 +128,7 @@ Or in a easier way, use this to kill them all
 ```
 pkill -f "airflow webserver"
 pkill -f "airflow scheduler"
+pkill -f "mlflow"
 ```
 
 ## PySpark Configuration

@@ -16,7 +16,7 @@ from src.inference import make_predictions
 
 dag = DAG(
     'iot_device_failure',
-    start_date=datetime(2023, 1, 1),
+    start_date=datetime(2023, 7, 1),
     schedule=None,
     tags=['iot_sensor_failure']
 )
@@ -35,7 +35,7 @@ task2 = PythonOperator(
         'input_file_path': f'{base_dir}/data/from/data.csv', 
         'output_train_data_path': f'{base_dir}/data/to/train_data', 
         'output_test_data_path': f'{base_dir}/data/to/test_data',
-        'scaler_output_path': f'{base_dir}/data/to/pipeline_model'
+        'scaler_path': f'{base_dir}/data/to/pipeline_model'
     },
     dag=dag
 )
@@ -46,8 +46,8 @@ task3 = PythonOperator(
     op_kwargs={
         'input_train_data_path': f'{base_dir}/data/to/train_data',
         'input_test_data_path': f'{base_dir}/data/to/test_data',
-        'output_file_path': f'{base_dir}/data/to/model',
-        'scaler_input_path': f'{base_dir}/data/to/pipeline_model'
+        'model_path': f'{base_dir}/data/to/model',
+        'scaler_path': f'{base_dir}/data/to/pipeline_model'
     },
     dag=dag
 )
@@ -56,10 +56,10 @@ task4 = PythonOperator(
     task_id='make_predictions',
     python_callable=make_predictions,
     op_kwargs={
-        'input_file_path': f'{base_dir}/data/to/new_data.csv',
-        'model_input_path': f'{base_dir}/data/to/model',
-        'scaler_input_path': f'{base_dir}/data/to/pipeline_model',
-        'output_file_path': f'{base_dir}/data/to/predictions.csv'
+        'input_file_path': f'{base_dir}/data/to/test_data',
+        'model_path': f'{base_dir}/data/to/model',
+        'scaler_path': f'{base_dir}/data/to/pipeline_model',
+        'predict_file_path': f'{base_dir}/data/to/predictions'
     },
     dag=dag
 )

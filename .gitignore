@@ -169,3 +169,9 @@ data/
 airflow*
 webserver_config.py
 /logs/
+
+
+#mlflow
+mlflow*
+nohup.out
+mlruns/
